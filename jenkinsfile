@@ -1,17 +1,29 @@
 pipeline {
     agent { label 'malli' }
-    triggers {
-        cron('0 * * * *')
-    }
     stages {
         stage('SourceCode') {
             steps {
                 git branch: 'main', url: 'https://github.com/yadavallimallikharjua/js-e2e-express-server'
             }
         }
-        stage('Build') {
+        stage('Dependencies') {
             steps {
                 sh 'npm install'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+        stage('Package') {
+            steps {
+                sh 'npm pack'
+            }
+        }
+        stage('Test results') {
+            steps {
+                sh 'npm test'
             }
         }
           stage('Sonar Analysis') {
